@@ -1,1 +1,94 @@
+using System;
 
+public class Employee
+{
+    public string Name { get; set; }
+    public string Position { get; set; }
+    public decimal Salary { get; set; }
+
+    public Employee(string name, string position, decimal salary)
+    {
+        Name = name;
+        Position = position;
+        Salary = salary;
+    }
+
+    public virtual void Work()
+    {
+        Console.WriteLine($"{Name} выполняет обязанности");
+    }
+}
+
+public class Manager : Employee
+{
+    public int TeamSize { get; set; }
+
+    public Manager(string name, decimal salary, int teamSize)
+        : base(name, "Менеджер", salary)
+    {
+        TeamSize = teamSize;
+    }
+
+    public void ConductMeeting()
+    {
+        Console.WriteLine($"{Name} проводит собрание");
+    }
+
+    public override void Work()
+    {
+        Console.WriteLine($"{Name} управляет командой");
+    }
+}
+
+public class Developer : Employee
+{
+    public string ProgrammingLanguage { get; set; }
+
+    public Developer(string name, decimal salary, string programmingLanguage)
+        : base(name, "Разработчик", salary)
+    {
+        ProgrammingLanguage = programmingLanguage;
+    }
+
+    public void WriteCode()
+    {
+        Console.WriteLine($"{Name} пишет код на {ProgrammingLanguage}");
+    }
+}
+
+public class Director : Employee
+{
+    public string Department { get; set; }
+
+    public Director(string name, decimal salary, string department)
+        : base(name, "Директор", salary)
+    {
+        Department = department;
+    }
+
+    public void ApproveBudget()
+    {
+        Console.WriteLine($"{Name} утверждает бюджет");
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        Manager manager = new Manager("Иван", 80000, 10);
+        Developer developer = new Developer("Анна", 120000, "C#");
+        Director director = new Director("Мария", 200000, "IT");
+
+        manager.Work();
+        manager.ConductMeeting();
+
+        developer.Work();
+        developer.WriteCode();
+
+        director.Work();
+        director.ApproveBudget();
+
+        Console.ReadLine();
+    }
+}
