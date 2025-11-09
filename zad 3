@@ -1,0 +1,108 @@
+using System;
+using System.Collections.Generic;
+
+public abstract class LibraryItem
+{
+    public string Title { get; set; }
+    public string Author { get; set; }
+    public int Year { get; set; }
+    public bool IsAvailable { get; set; } = true;
+
+    protected LibraryItem(string title, string author, int year) =>
+        (Title, Author, Year) = (title, author, year);
+
+    public virtual void DisplayInfo() =>
+        Console.WriteLine($"{Title} ({Author}, {Year}) - {(IsAvailable ? "✓" : "✗")}");
+
+    public void Borrow() => IsAvailable = false;
+    public void Return() => IsAvailable = true;
+}
+
+public class Book : LibraryItem
+{
+    public int Pages { get; set; }
+    public string ISBN { get; set; }
+
+    public Book(string title, string author, int year, int pages, string isbn)
+        : base(title, author, year) => (Pages, ISBN) = (pages, isbn);
+
+    public override void DisplayInfo() =>
+        Console.WriteLine($" {Title} - {Pages}стр. ({ISBN})");
+}
+
+public class Magazine : LibraryItem
+{
+    public int Issue { get; set; }
+
+    public Magazine(string title, string author, int year, int issue)
+        : base(title, author, year) => Issue = issue;
+
+    public override void DisplayInfo() =>
+        Console.WriteLine($" {Title} №{Issue}");
+}
+
+public class DVD : LibraryItem
+{
+    public int Duration { get; set; }
+
+    public DVD(string title, string author, int year, int duration)
+        : base(title, author, year) => Duration = duration;
+
+    public override void DisplayInfo() =>
+        Console.WriteLine($" {Title} - {Duration}мин.");
+}
+
+public class Audiobook : LibraryItem
+{
+    public int Duration { get; set; }
+
+    public Audiobook(string title, string author, int year, int duration)
+        : base(title, author, year) => Duration = duration;
+
+    public override void DisplayInfo() =>
+        Console.WriteLine($" {Title} - {Duration}мин.");
+}
+
+public class Library
+{
+    private List<LibraryItem> items = new List<LibraryItem>();
+
+    public void Add(LibraryItem item) => items.Add(item);
+
+    public void ShowAll()
+    {
+        foreach (var item in items)
+            item.DisplayInfo();
+    }
+
+    public List<T> GetByType<T>() where T : LibraryItem
+    {
+        var result = new List<T>();
+        foreach (var item in items)
+            if (item is T t) result.Add(t);
+        return result;
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        var lib = new Library();
+
+        lib.Add(new Book("Война и мир", "Толстой", 1869, 1225, "978-5-123-45678-9"));
+        lib.Add(new Magazine("Наука и жизнь", "Редакция", 2023, 5));
+        lib.Add(new DVD("Интерстеллар", "Нолан", 2014, 169));
+        lib.Add(new Audiobook("1984", "Оруэлл", 1949, 421));
+
+        Console.WriteLine("Все материалы:");
+        lib.ShowAll();
+
+        Console.WriteLine("\nКниги:");
+        lib.GetByType<Book>().ForEach(b => b.DisplayInfo());
+
+        Console.WriteLine("\nВыдача книги:");
+        lib.GetByType<Book>()[0].Borrow();
+        lib.ShowAll();
+    }
+}
