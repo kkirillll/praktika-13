@@ -1,1 +1,109 @@
+using System;
 
+public abstract class BankAccount
+{
+    public string AccountNumber { get; set; }
+    public decimal Balance { get; protected set; }
+    public string Owner { get; set; }
+
+    protected BankAccount(string number, string owner, decimal balance = 0)
+    {
+        AccountNumber = number;
+        Owner = owner;
+        Balance = balance;
+    }
+
+    public virtual void Deposit(decimal amount)
+    {
+        Balance += amount;
+        Console.WriteLine($"{Owner}: +{amount:C}. Баланс: {Balance:C}");
+    }
+
+    public virtual bool Withdraw(decimal amount)
+    {
+        if (amount <= Balance)
+        {
+            Balance -= amount;
+            Console.WriteLine($"{Owner}: -{amount:C}. Баланс: {Balance:C}");
+            return true;
+        }
+        Console.WriteLine($"{Owner}: Недостаточно средств");
+        return false;
+    }
+
+    public virtual void DisplayInfo() =>
+        Console.WriteLine($"{Owner} [{AccountNumber}]: {Balance:C}");
+}
+
+public class CheckingAccount : BankAccount
+{
+    public decimal OverdraftLimit { get; set; }
+
+    public CheckingAccount(string number, string owner, decimal limit)
+        : base(number, owner) => OverdraftLimit = limit;
+
+    public override bool Withdraw(decimal amount)
+    {
+        if (amount <= Balance + OverdraftLimit)
+        {
+            Balance -= amount;
+            Console.WriteLine($"{Owner}: -{amount:C}. Баланс: {Balance:C}");
+            return true;
+        }
+        Console.WriteLine($"{Owner}: Превышен лимит");
+        return false;
+    }
+}
+
+public class SavingsAccount : BankAccount
+{
+    public decimal InterestRate { get; set; }
+
+    public SavingsAccount(string number, string owner, decimal rate)
+        : base(number, owner) => InterestRate = rate;
+
+    public void ApplyInterest()
+    {
+        var interest = Balance * InterestRate / 100;
+        Balance += interest;
+        Console.WriteLine($"{Owner}: Проценты {interest:C}. Баланс: {Balance:C}");
+    }
+}
+
+public class CreditAccount : BankAccount
+{
+    public decimal CreditLimit { get; set; }
+    public DateTime DueDate { get; set; }
+
+    public CreditAccount(string number, string owner, decimal limit, DateTime due)
+        : base(number, owner, limit) => DueDate = due;
+
+    public void MakePayment(decimal amount)
+    {
+        Balance += amount;
+        Console.WriteLine($"{Owner}: Платеж {amount:C}. Долг: {CreditLimit - Balance:C}");
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        var checking = new CheckingAccount("CHK123", "Иван", 1000);
+        var savings = new SavingsAccount("SAV456", "Петр", 5);
+        var credit = new CreditAccount("CRD789", "Мария", 50000, DateTime.Now.AddYears(1));
+
+        checking.Deposit(2000);
+        savings.Deposit(10000);
+
+        checking.Withdraw(2500);
+        savings.ApplyInterest();
+
+        credit.Withdraw(20000);
+        credit.MakePayment(5000);
+
+        checking.DisplayInfo();
+        savings.DisplayInfo();
+        credit.DisplayInfo();
+    }
+}
