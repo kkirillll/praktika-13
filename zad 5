@@ -1,0 +1,74 @@
+using System;
+using System.Collections.Generic;
+
+namespace zad5;
+public abstract class Animal
+{
+    public string Species { get; set; }
+    public string Diet { get; set; }
+
+    public Animal(string species, string diet) => (Species, Diet) = (species, diet);
+
+    public virtual void Show() => Console.WriteLine(Species);
+    public abstract void Sound();
+    public abstract void Move();
+}
+
+public class Mammal : Animal
+{
+    public Mammal(string species, string diet) : base(species, diet) { }
+
+    public override void Show() => Console.WriteLine($" {Species}");
+    public override void Sound() => Console.WriteLine($"{Species} рычит");
+    public override void Move() => Console.WriteLine($"{Species} бежит");
+}
+
+public class Bird : Animal
+{
+    public Bird(string species, string diet) : base(species, diet) { }
+
+    public override void Show() => Console.WriteLine($" {Species}");
+    public override void Sound() => Console.WriteLine($"{Species} поет");
+    public override void Move() => Console.WriteLine($"{Species} летит");
+}
+
+public class Reptile : Animal
+{
+    public Reptile(string species, string diet) : base(species, diet) { }
+
+    public override void Show() => Console.WriteLine($" {Species}");
+    public override void Sound() => Console.WriteLine($"{Species} шипит");
+    public override void Move() => Console.WriteLine($"{Species} ползет");
+}
+
+public class Fish : Animal
+{
+    public Fish(string species, string diet) : base(species, diet) { }
+
+    public override void Show() => Console.WriteLine($" {Species}");
+    public override void Sound() => Console.WriteLine($"{Species} молчит");
+    public override void Move() => Console.WriteLine($"{Species} плывет");
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        var animals = new List<Animal>
+        {
+            new Mammal("Лев", "мясо"),
+            new Bird("Орел", "рыба"),
+            new Reptile("Змея", "грызуны"),
+            new Fish("Акула", "рыба")
+        };
+
+        Console.WriteLine("Животные:");
+        animals.ForEach(a => a.Show());
+
+        Console.WriteLine("\nЗвуки:");
+        animals.ForEach(a => a.Sound());
+
+        Console.WriteLine("\nДвижение:");
+        animals.ForEach(a => a.Move());
+    }
+}
