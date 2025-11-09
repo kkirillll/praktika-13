@@ -1,0 +1,69 @@
+using System;
+using System.Collections.Generic;
+namespace zad4;
+
+
+public abstract class Course
+{
+    public string Title { get; set; }
+    public string Author { get; set; }
+    public decimal Price { get; set; }
+
+    public Course(string title, string author, decimal price) =>
+        (Title, Author, Price) = (title, author, price);
+
+    public virtual void Show() => Console.WriteLine($"{Title} - {Price:C}");
+    public abstract void Learn();
+}
+
+public class VideoCourse : Course
+{
+    public int Videos { get; set; }
+
+    public VideoCourse(string title, string author, decimal price, int videos)
+        : base(title, author, price) => Videos = videos;
+
+    public override void Show() => Console.WriteLine($" {Title} ({Videos} видео)");
+    public override void Learn() => Console.WriteLine($"Смотрим {Videos} видео");
+}
+
+public class TextCourse : Course
+{
+    public int Pages { get; set; }
+
+    public TextCourse(string title, string author, decimal price, int pages)
+        : base(title, author, price) => Pages = pages;
+
+    public override void Show() => Console.WriteLine($" {Title} ({Pages} стр.)");
+    public override void Learn() => Console.WriteLine($"Читаем {Pages} страниц");
+}
+
+public class InteractiveCourse : Course
+{
+    public int Exercises { get; set; }
+
+    public InteractiveCourse(string title, string author, decimal price, int exercises)
+        : base(title, author, price) => Exercises = exercises;
+
+    public override void Show() => Console.WriteLine($" {Title} ({Exercises} заданий)");
+    public override void Learn() => Console.WriteLine($"Выполняем {Exercises} заданий");
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        var courses = new List<Course>
+        {
+            new VideoCourse("C#", "Иван", 5000, 45),
+            new TextCourse("Алгоритмы", "Анна", 3000, 350),
+            new InteractiveCourse("React", "Петр", 8000, 25)
+        };
+
+        Console.WriteLine("Курсы:");
+        courses.ForEach(c => c.Show());
+
+        Console.WriteLine("\nОбучение:");
+        courses.ForEach(c => c.Learn());
+    }
+}
