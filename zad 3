@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+namespace zad3;
+
 public abstract class LibraryItem
 {
     public string Title { get; set; }
